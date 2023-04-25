@@ -16,6 +16,8 @@ export class RealmWeatherData extends Realm.Object<RealmWeatherData> {
   city!: string;
   country!: string;
   date!: string;
+  icon!: string;
+  is_recent!: boolean;
   is_favourite!: boolean;
 
   static schema = {
@@ -33,9 +35,11 @@ export class RealmWeatherData extends Realm.Object<RealmWeatherData> {
       city: 'string',
       country: 'string',
       date: 'string',
+      icon: 'string',
+      is_recent: 'bool',
       is_favourite: 'bool',
     },
-    primaryKey: '_id',
+    primaryKey: 'city',
   };
 }
 

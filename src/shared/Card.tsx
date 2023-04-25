@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     marginTop: 1,
     marginLeft: 16,
     marginRight: 16,
-    padding: 15,
   },
 });
 export default Card;

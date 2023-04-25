@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import moment from 'moment';
-import {useRealm} from '../realm/RealmWeatherData';
+import {RealmWeatherData, useObject, useRealm} from '../realm/RealmWeatherData';
 import Container from '../shared/Container';
 import HeaderBar from '../shared/HeaderBar';
 import TextLabel from '../shared/TextLabel';
@@ -9,8 +9,12 @@ import Row from '../shared/Row';
 import Column from '../shared/Column';
 import GroupButton from '../shared/GroupButton';
 import {Utils} from '../../utils/Utils';
+import Favourite from './Favourite';
+import FavouriteComponent from '../shared/FavouriteComponent';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../drawer/AppDrawer';
 
-interface IWeatherData {
+export interface IWeatherData {
   main: string;
   description: string;
   temp: number;
@@ -22,15 +26,21 @@ interface IWeatherData {
   city: string;
   country: string;
   date: string;
+  icon: string;
 }
-type Props = {};
+type Props = NativeStackScreenProps<RootStackParamList, 'Weather'>;
 
-const Weather = (props: Props) => {
+const Weather: React.FC<Props> = ({route, navigation}) => {
+  // console.log('Weather data', route.params.city);
+  // console.log('Weather data', navigation);
   const [temp, setTemp] = useState(0);
   const [tempMin, setTempMin] = useState(0);
   const [tempMax, setTempMax] = useState(0);
 
   const realm = useRealm();
+  const realmObject = useObject(RealmWeatherData, route.params.city);
+  // console.log('realmObject', realmObject);
+
   const [weatherData, setWeatherData] = useState<IWeatherData>();
 
   const setTempMode = (mode: string) => {
@@ -51,13 +61,18 @@ const Weather = (props: Props) => {
 
   useEffect(() => {
     getMoviesFromApi();
-
     return () => {};
   }, []);
 
+  useEffect(() => {
+    setTempMode(Utils.Celsius);
+    if (weatherData) onRecentSave(weatherData);
+    return () => {};
+  }, [weatherData]);
+
   const getMoviesFromApi = () => {
     return fetch(
-      'https://api.openweathermap.org/data/2.5/weather?q=Aurangabad&APPID=871e5e40bdcc1860b997404cc7ca1042',
+      `https://api.openweathermap.org/data/2.5/weather?q=${route.params.city}&APPID=871e5e40bdcc1860b997404cc7ca1042`,
     )
       .then(response => response.json())
       .then(json => {
@@ -65,6 +80,7 @@ const Weather = (props: Props) => {
         setWeatherData({
           main: json.weather[0].main,
           description: json.weather[0].description,
+          icon: json.weather[0].icon,
           temp: Math.round(json.main.temp),
           feels_like: Math.round(json.main.feels_like), // Precipitation
           temp_min: Math.round(json.main.temp_min),
@@ -75,42 +91,57 @@ const Weather = (props: Props) => {
           country: json.sys.country,
           date: moment(json.dt).format('llll'),
         });
-        setTempMode(Utils.Celsius);
       })
       .catch(error => {
         console.error('error', error);
       });
   };
 
-  const onPressFunction = (data?: IWeatherData) => {
+  const onRecentSave = (data?: IWeatherData) => {
     // console.log(data);
-    realm.write(() => {
-      realm.create('RealmWeatherData', {
-        _id: new Realm.BSON.ObjectId(),
-        is_favourite: true,
-        ...data,
+    if (data?.city) {
+      console.log('Updating records');
+      if (realmObject?.city === data.city) {
+        realm.write(() => {
+          (realmObject.temp = data.temp),
+            (realmObject.temp_min = data.temp_min),
+            (realmObject.temp_min = data.temp_min),
+            (realmObject.feels_like = data.feels_like),
+            (realmObject.is_favourite = false);
+        });
+      }
+    } else {
+      console.log('Saved');
+      realm.write(() => {
+        realm.create('RealmWeatherData', {
+          _id: new Realm.BSON.ObjectId(),
+          is_recent: true,
+          is_favourite: false,
+          ...data,
+        });
       });
-    });
+    }
+  };
+
+  const gotToSearchLocation = () => {
+    navigation.navigate('SearchLocation', {});
   };
 
   return (
     <Container>
-      <HeaderBar />
+      <HeaderBar goto={gotToSearchLocation} />
       <Row flex={2}>
         <Column>
           <TextLabel type="date">{weatherData?.date}</TextLabel>
           <TextLabel type="city">
             {weatherData?.city}, {weatherData?.country}
           </TextLabel>
-          <Pressable
-            onPress={() => onPressFunction(weatherData)}
+          <View
+            // onPress={() => onUpdateForFav(weatherData)}
             style={styles.addfavourite}>
-            <Image
-              source={require('../assets/images/icon_favourite.png')}
-              style={styles.icon}
-            />
+            <FavouriteComponent weatherData={weatherData} />
             <TextLabel type="favourite">Add to favourite</TextLabel>
-          </Pressable>
+          </View>
         </Column>
       </Row>
       <Row flex={2}>
@@ -133,7 +164,7 @@ const Weather = (props: Props) => {
         <Column align="flex-start" alignSelf="center">
           <TextLabel type="favourite">Min - Max</TextLabel>
           <TextLabel type="city">
-            {weatherData?.temp_min} - {weatherData?.temp_max}
+            {tempMin} - {tempMax}
           </TextLabel>
         </Column>
 

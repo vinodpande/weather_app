@@ -1,21 +1,30 @@
 import {View, Text, Pressable, StyleSheet, Image} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
 
 type Props = {
   goto: Function;
 };
 
-const HeaderBar: React.FC<Props> = ({goto}) => {
+const SearchHeaderBar: React.FC<Props> = ({goto}) => {
+  const [inputeValue, setInputeValue] = useState('');
+  const onInputeChnage = (e: string) => {
+    // console.log('e', e);
+    setInputeValue(e);
+    goto(e);
+  };
   return (
     <View style={style.container}>
       <Image
         source={require('../assets/images/icon_menu_white.png')}
         style={style.icon}
       />
-      <Image
-        source={require('../assets/images/logo_splash.png')}
-        style={style.image_log}
+      <TextInput
+        focusable={true}
+        value={inputeValue}
+        onChangeText={e => {
+          onInputeChnage(e);
+        }}
       />
       <Pressable onPress={() => goto()} style={style.icon_right}>
         <Image
@@ -51,4 +60,4 @@ const style = StyleSheet.create({
     marginLeft: 'auto',
   },
 });
-export default HeaderBar;
+export default SearchHeaderBar;

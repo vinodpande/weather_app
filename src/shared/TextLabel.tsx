@@ -3,7 +3,16 @@ import React from 'react';
 
 type Props = {
   children: React.ReactNode;
-  type: 'date' | 'city' | 'favourite' | 'temp';
+  type:
+    | 'date'
+    | 'city'
+    | 'favourite'
+    | 'temp'
+    | 'recentLabel'
+    | 'recentTemp'
+    | 'recentDes'
+    | 'recentSearchLabel'
+    | 'searchLabel';
 };
 
 const TextLabel: React.FC<Props> = props => {
@@ -35,6 +44,33 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     marginTop: 15,
     fontSize: 52,
+  },
+  recentLabel: {
+    color: '#FFE539',
+    fontSize: 15,
+  },
+  recentTemp: {
+    color: '#FFFFFF',
+    marginTop: 0,
+    fontSize: 18,
+
+    fontWeight: 800,
+  },
+  recentDes: {
+    color: '#FFFFFF',
+    marginTop: 0,
+    fontSize: 14,
+    marginLeft: 7,
+  },
+  recentSearchLabel: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    marginTop: 7,
+    marginBottom: 24,
+  },
+  searchLabel: {
+    color: '#000000',
+    fontSize: 14,
   },
 });
 export default TextLabel;

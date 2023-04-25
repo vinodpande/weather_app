@@ -8,12 +8,19 @@ import RecentSearch from '../screens/RecentSearch';
 import Weather from '../screens/Weather';
 import HeaderBar from '../shared/HeaderBar';
 import Favourite from '../screens/Favourite';
+import SearchLocation from '../screens/SearchLocation';
 
-const Drawer = createDrawerNavigator();
+export type RootStackParamList = {
+  Splash: {};
+  Weather: {city: string};
+  Favourite: {};
+  RecentSearch: {};
+  SearchLocation: {};
+};
 
-type Props = {};
+const Drawer = createDrawerNavigator<RootStackParamList>();
 
-const AppDrawer = (props: Props) => {
+const AppDrawer = () => {
   const [showSplash, setShowSplash] = useState(true);
   useEffect(() => {
     setTimeout(() => {
@@ -46,9 +53,15 @@ const AppDrawer = (props: Props) => {
             options={{headerShown: false}}
           />
         ) : null}
-        <Drawer.Screen name="Weather" component={Weather} />
+
+        <Drawer.Screen
+          name="Weather"
+          initialParams={{city: 'Jalna'}}
+          component={Weather}
+        />
         <Drawer.Screen name="Favourite" component={Favourite} />
-        <Drawer.Screen name="Recent Search" component={RecentSearch} />
+        <Drawer.Screen name="RecentSearch" component={RecentSearch} />
+        <Drawer.Screen name="SearchLocation" component={SearchLocation} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

@@ -1,14 +1,15 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import React from 'react';
 
 type Props = {
+  style?: StyleProp<ViewStyle>;
   children: React.ReactNode;
   flex?: number;
   elevation?: number;
 };
 
-const Row: React.FC<Props> = ({children, flex = 1}) => {
-  return <View style={[styles.row, {flex: flex}]}>{children}</View>;
+const Row: React.FC<Props> = ({children, flex = 0, style}) => {
+  return <View style={[styles.row, {flex: flex}, style]}>{children}</View>;
 };
 const styles = StyleSheet.create({
   row: {
