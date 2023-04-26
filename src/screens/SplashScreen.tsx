@@ -7,7 +7,7 @@ type Props = {};
 const SplashScreen = (props: Props) => {
   return (
     <Container>
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={styles.conainer}>
         <Image
           source={require('../assets/images/logo_splash.png')}
           style={styles.image_log}
@@ -18,6 +18,7 @@ const SplashScreen = (props: Props) => {
 };
 
 const styles = StyleSheet.create({
+  conainer: {flex: 1, justifyContent: 'center'},
   image_log: {
     width: 170,
     height: 36,

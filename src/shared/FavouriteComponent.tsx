@@ -6,9 +6,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   weatherData?: IWeatherData;
+  isFavourite: boolean;
 };
 
-const FavouriteComponent: React.FC<Props> = ({weatherData}) => {
+const FavouriteComponent: React.FC<Props> = ({weatherData, isFavourite}) => {
   const realm = useRealm();
   let realmObject: any;
   if (weatherData) {
@@ -28,8 +29,11 @@ const FavouriteComponent: React.FC<Props> = ({weatherData}) => {
 
   return (
     <Pressable onPress={() => onUpdateForFav(weatherData)}>
-      <Icon name="favorite-border" size={22} color="#FFF" />
-      <Icon name="favorite" size={22} color="#FFE539" />
+      {isFavourite ? (
+        <Icon name="favorite" size={22} color="#FFE539" />
+      ) : (
+        <Icon name="favorite-border" size={22} color="#FFF" />
+      )}
     </Pressable>
   );
 };

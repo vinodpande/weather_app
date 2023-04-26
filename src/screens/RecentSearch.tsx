@@ -29,17 +29,17 @@ const RecentSearch: React.FC<Props> = ({navigation}) => {
     }
   });
   const realm = useRealm();
-  console.log('data objects', objects);
+  // console.log('data objects', objects);
 
   const clearAll = () => {
     objects?.filter(item => {
       if (item.is_favourite === false) {
-        console.log('Delete', item);
+        // console.log('Delete', item);
         realm.write(() => {
           realm.delete(item);
         });
       } else {
-        console.log('Delete update', item);
+        // console.log('Delete update', item);
         realm.write(() => {
           item.is_recent = false;
         });
@@ -69,7 +69,7 @@ const RecentSearch: React.FC<Props> = ({navigation}) => {
             </TextLabel>
             <Pressable
               onPress={() => setModalVisible(true)}
-              style={{flex: 1, alignItems: 'flex-end'}}>
+              style={styles.pressable}>
               <TextLabel type="favourite">Clear All</TextLabel>
             </Pressable>
           </Row>
@@ -86,6 +86,6 @@ const RecentSearch: React.FC<Props> = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  row: {flexDirection: 'row'},
+  pressable: {flex: 1, alignItems: 'flex-end'},
 });
 export default RecentSearch;

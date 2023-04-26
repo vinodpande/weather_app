@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../drawer/AppDrawer';
@@ -27,10 +27,9 @@ const SearchLocation: React.FC<Props> = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#FFF'}}>
+    <View style={style.container}>
       <SearchHeaderBar goto={filterItems} navigation={navigation} />
       <FlatList
-        numColumns={1}
         data={filterCites}
         renderItem={({item}) => (
           <SearchListItem
@@ -38,11 +37,12 @@ const SearchLocation: React.FC<Props> = ({navigation}) => {
             onSlectedCity={setSelectedLocation}
           />
         )}
-        contentContainerStyle={{padding: 0, margin: 0, width: '100%'}}
-        style={{padding: 0, margin: 0, width: '100%'}}
       />
     </View>
   );
 };
 
+const style = StyleSheet.create({
+  container: {flex: 1, backgroundColor: '#fff'},
+});
 export default SearchLocation;

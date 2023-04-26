@@ -15,12 +15,7 @@ const GroupButton: React.FC<Props> = ({onCalculateTemp}) => {
   };
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        height: 60,
-        alignItems: 'flex-end',
-      }}>
+    <View style={styles.container}>
       <Pressable
         style={
           selectedButton === Utils.Celsius
@@ -78,6 +73,12 @@ const GroupButton: React.FC<Props> = ({onCalculateTemp}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    height: 60,
+    alignItems: 'flex-end',
+    marginLeft: 10,
+  },
   button: {
     flexDirection: 'row',
     height: 30,

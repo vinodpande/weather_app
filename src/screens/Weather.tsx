@@ -1,7 +1,12 @@
 import {View, Text, StyleSheet, Pressable, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import moment from 'moment';
-import {RealmWeatherData, useObject, useRealm} from '../realm/RealmWeatherData';
+import {
+  RealmWeatherData,
+  useObject,
+  useQuery,
+  useRealm,
+} from '../realm/RealmWeatherData';
 import Container from '../shared/Container';
 import HeaderBar from '../shared/headers/HeaderBar';
 import TextLabel from '../shared/TextLabel';
@@ -34,13 +39,18 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Weather'>;
 const Weather: React.FC<Props> = ({route, navigation}) => {
   // console.log('Weather data', route.params.city);
   // console.log('Weather data', navigation);
+
   const [temp, setTemp] = useState(0);
   const [tempMin, setTempMin] = useState(0);
   const [tempMax, setTempMax] = useState(0);
+  const [isFavourite, setIsFavourite] = useState(false);
 
   const realm = useRealm();
-  const realmObject = useObject(RealmWeatherData, route.params.city);
-  console.log('realmObject', realmObject);
+  // const realmObject = useObject(RealmWeatherData, route.params.city);
+  const realmObject_qu = useQuery(RealmWeatherData).filter(item => {
+    if (item.city.toLowerCase() === route.params.city.toLowerCase())
+      return item;
+  });
 
   const [weatherData, setWeatherData] = useState<IWeatherData>();
 
@@ -68,6 +78,8 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
   useEffect(() => {
     setTempMode(Utils.Celsius);
     if (weatherData) onRecentSave(weatherData);
+    // console.log('realmObject ', realmObject);
+    console.log('realmObject from', realmObject_qu);
     return () => {};
   }, [weatherData]);
 
@@ -82,12 +94,12 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
           main: json.weather[0].main,
           description: json.weather[0].description,
           icon: json.weather[0].icon,
-          temp: Math.round(json.main.temp),
-          feels_like: Math.round(json.main.feels_like), // Precipitation
-          temp_min: Math.round(json.main.temp_min),
-          temp_max: Math.round(json.main.temp_max),
-          pressure: Math.round(json.main.pressure),
-          humidity: Math.round(json.main.humidity),
+          temp: json.main.temp,
+          feels_like: json.main.feels_like, // Precipitation
+          temp_min: json.main.temp_min,
+          temp_max: json.main.temp_max,
+          pressure: json.main.pressure,
+          humidity: json.main.humidity,
           city: json.name,
           country: json.sys.country,
           date: moment(json.dt).format('llll'),
@@ -101,17 +113,20 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
   const onRecentSave = (data?: IWeatherData) => {
     // console.log(data);
     if (data?.city) {
-      if (realmObject?.city === data.city) {
-        console.log('Updating records');
+      if (realmObject_qu.length > 0) {
+        // console.log('Updating records');
+        setIsFavourite(realmObject_qu[0].is_favourite);
+
         realm.write(() => {
-          (realmObject.temp = data.temp),
-            (realmObject.temp_min = data.temp_min),
-            (realmObject.temp_min = data.temp_min),
-            (realmObject.feels_like = data.feels_like),
-            (realmObject.is_recent = true);
+          (realmObject_qu[0].temp = data.temp),
+            (realmObject_qu[0].temp_min = data.temp_min),
+            (realmObject_qu[0].temp_min = data.temp_min),
+            (realmObject_qu[0].feels_like = data.feels_like),
+            (realmObject_qu[0].is_recent = true);
         });
       } else {
-        console.log('Saved');
+        // console.log('Saved');
+        setIsFavourite(false);
         try {
           realm.write(() => {
             realm.create('RealmWeatherData', {
@@ -148,27 +163,24 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
           <View
             // onPress={() => onUpdateForFav(weatherData)}
             style={styles.addfavourite}>
-            <FavouriteComponent weatherData={weatherData} />
+            <FavouriteComponent
+              weatherData={weatherData}
+              isFavourite={isFavourite}
+            />
             <TextLabel type="favourite">Add to favourite</TextLabel>
           </View>
         </Column>
       </Row>
 
-      <Row
-        flex={2}
-        style={{
-          margin: 0,
-          padding: 0,
-          justifyContent: 'center',
-        }}>
+      <Row flex={2}>
         <Column alignSelf="center">
           <Image
-            style={{width: 64, height: 67}}
+            style={styles.image_weather}
             source={{
-              uri: `https://openweathermap.org/img/wn/03n.png`,
+              uri: `https://openweathermap.org/img/wn/${weatherData?.icon}.png`,
             }}
           />
-          <Row flex={0} style={{margin: 0, padding: 0}}>
+          <Row flex={0} style={styles.row_temp}>
             <TextLabel type="temp">{temp}</TextLabel>
             <GroupButton onCalculateTemp={setTempMode} />
           </Row>
@@ -177,7 +189,7 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
         </Column>
       </Row>
 
-      <Row flex={1} elevation={2} style={{padding: 0}}>
+      <Row flex={1} elevation={2} style={styles.row}>
         <Image
           source={require('../assets/images/icon_temperature_info.png')}
           style={styles.icon_min_max}
@@ -222,7 +234,9 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    padding: 0,
   },
+  row_temp: {margin: 0, padding: 0},
   column: {
     flexDirection: 'column',
   },
@@ -244,5 +258,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  image_weather: {width: 64, height: 67},
 });
 export default Weather;

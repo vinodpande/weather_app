@@ -59,7 +59,7 @@ const Favourite: React.FC<Props> = ({navigation}) => {
             </TextLabel>
             <Pressable
               onPress={() => setModalVisible(true)}
-              style={{flex: 1, alignItems: 'flex-end'}}>
+              style={styles.pressable}>
               <TextLabel type="favourite">Remove All</TextLabel>
             </Pressable>
           </Row>
@@ -76,7 +76,7 @@ const Favourite: React.FC<Props> = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  row: {flexDirection: 'row'},
+  pressable: {flex: 1, alignItems: 'flex-end'},
 });
 
 export default Favourite;

@@ -16,6 +16,6 @@ export class Utils {
     {city: 'Beed'},
     {city: 'Aurangabad'},
     {city: 'Pune'},
-    {city: 'mumbai'},
+    {city: 'Mumbai'},
   ];
 }

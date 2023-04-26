@@ -26,12 +26,13 @@ const SearchListItem: React.FC<Props> = ({city, onSlectedCity}) => {
 const styles = StyleSheet.create({
   row: {
     backgroundColor: '#FFF',
-    margin: 0,
-    padding: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    paddingLeft: 24,
     borderBottomColor: '#000',
     borderBottomWidth: 0.2,
     justifyContent: 'flex-start',
-    alignItems: 'center',
+
     paddingBottom: 14,
   },
 });
