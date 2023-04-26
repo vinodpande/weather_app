@@ -65,7 +65,10 @@ const AppDrawer = () => {
         <Drawer.Screen
           name="SearchLocation"
           component={SearchLocation}
-          options={{title: 'Search Location'}}
+          options={{
+            title: 'Search Location',
+            drawerItemStyle: {display: 'none'},
+          }}
         />
       </Drawer.Navigator>
     </NavigationContainer>
