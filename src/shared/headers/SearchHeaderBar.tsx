@@ -1,4 +1,4 @@
-import {View, Text, Pressable, StyleSheet, Image} from 'react-native';
+import {View, Pressable, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -25,7 +25,7 @@ const SearchHeaderBar: React.FC<Props> = ({goto, navigation}) => {
       </Pressable>
       <TextInput
         placeholder="Search for city"
-        style={{flex: 1}}
+        style={style.inpute}
         autoFocus={true}
         value={inputeValue}
         onChangeText={e => {
@@ -64,5 +64,6 @@ const style = StyleSheet.create({
     height: 24,
     marginLeft: 'auto',
   },
+  inpute: {flex: 1},
 });
 export default SearchHeaderBar;

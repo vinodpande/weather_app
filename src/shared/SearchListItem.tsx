@@ -1,11 +1,7 @@
-import {View, Text, Pressable, StyleSheet} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import React from 'react';
-import {RealmWeatherData} from '../realm/RealmWeatherData';
 import Row from './Row';
-import Column from './Column';
 import TextLabel from './TextLabel';
-import Card from './Card';
-import SuperScriptText from './SuperScriptText';
 
 type Props = {
   city: string;

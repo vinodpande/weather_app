@@ -1,4 +1,4 @@
-import {Pressable, Image, StyleSheet, StyleProp, ViewStyle} from 'react-native';
+import {Pressable, StyleSheet} from 'react-native';
 import React from 'react';
 import {IWeatherData} from '../screens/Weather';
 import {RealmWeatherData, useObject, useRealm} from '../realm/RealmWeatherData';

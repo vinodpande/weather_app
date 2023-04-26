@@ -1,13 +1,4 @@
-import {
-  View,
-  Text,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Platform,
-  Alert,
-  Button,
-} from 'react-native';
+import {View, Modal, Pressable, StyleSheet, Platform} from 'react-native';
 import React from 'react';
 import TextLabel from './TextLabel';
 import Row from './Row';
@@ -39,28 +30,12 @@ const CustomModel: React.FC<Props> = ({
         ]}
         onPress={() => setModalVisible(false)}
       />
-      <View
-        style={{
-          flex: 1,
-          alignSelf: 'center',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            backgroundColor: '#FFF',
-            width: 280,
-            height: 138,
-            elevation: 2,
-          }}>
+      <View style={styles.centeredView}>
+        <View style={styles.body}>
           <TextLabel type="modelLabel">
             Are you sure want ro remove all the favourities
           </TextLabel>
-          <Row
-            style={{
-              alignItems: 'flex-end',
-              justifyContent: 'flex-end',
-            }}>
+          <Row style={styles.row}>
             <Pressable onPress={() => setModalVisible(false)}>
               <TextLabel type="modelButton">No</TextLabel>
             </Pressable>
@@ -81,23 +56,19 @@ const CustomModel: React.FC<Props> = ({
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
+    alignSelf: 'center',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
-
-  button: {
-    borderRadius: 20,
-    padding: 10,
+  body: {
+    backgroundColor: '#FFF',
+    width: 280,
+    height: 138,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  row: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
 
   iOSBackdrop: {

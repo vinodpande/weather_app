@@ -1,4 +1,4 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import React from 'react';
 import {RealmWeatherData, useRealm} from '../realm/RealmWeatherData';
 import Row from './Row';
@@ -18,9 +18,7 @@ const RenderListItem: React.FC<Props> = ({data}) => {
   const realm = useRealm();
 
   const onUpdateForFav = (data?: RealmWeatherData) => {
-    console.log('Updating data', data?.city);
     if (data) {
-      console.log('Updating data 2');
       realm.write(() => {
         data.is_favourite = !data.is_favourite;
       });
