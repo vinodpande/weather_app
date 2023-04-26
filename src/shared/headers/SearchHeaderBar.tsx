@@ -1,13 +1,15 @@
 import {View, Text, Pressable, StyleSheet, Image} from 'react-native';
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   goto: Function;
+  navigation: any;
 };
 
-const SearchHeaderBar: React.FC<Props> = ({goto}) => {
-  const [inputeValue, setInputeValue] = useState('');
+const SearchHeaderBar: React.FC<Props> = ({goto, navigation}) => {
+  const [inputeValue, setInputeValue] = useState<string>('');
   const onInputeChnage = (e: string) => {
     // console.log('e', e);
     setInputeValue(e);
@@ -15,22 +17,23 @@ const SearchHeaderBar: React.FC<Props> = ({goto}) => {
   };
   return (
     <View style={style.container}>
-      <Image
-        source={require('../assets/images/icon_menu_white.png')}
-        style={style.icon}
-      />
+      <Pressable
+        onPress={() => {
+          navigation.goBack();
+        }}>
+        <Icon name="arrow-back" size={30} color="#000" />
+      </Pressable>
       <TextInput
-        focusable={true}
+        placeholder="Search for city"
+        style={{flex: 1}}
+        autoFocus={true}
         value={inputeValue}
         onChangeText={e => {
           onInputeChnage(e);
         }}
       />
-      <Pressable onPress={() => goto()} style={style.icon_right}>
-        <Image
-          source={require('../assets/images/icon_search_white.png')}
-          style={style.icon_right}
-        />
+      <Pressable onPress={() => setInputeValue('')} style={style.icon_right}>
+        <Icon name="clear" size={30} color="#000" />
       </Pressable>
     </View>
   );
@@ -44,6 +47,8 @@ const style = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 16,
     paddingRight: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#000',
   },
   icon: {
     width: 24,

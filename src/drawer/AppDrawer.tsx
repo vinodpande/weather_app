@@ -1,4 +1,3 @@
-import {View, Text, SafeAreaView} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -6,7 +5,6 @@ import SplashScreen from '../screens/SplashScreen';
 
 import RecentSearch from '../screens/RecentSearch';
 import Weather from '../screens/Weather';
-import HeaderBar from '../shared/HeaderBar';
 import Favourite from '../screens/Favourite';
 import SearchLocation from '../screens/SearchLocation';
 
@@ -25,7 +23,6 @@ const AppDrawer = () => {
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-      console.log('uning timer');
     }, 5000);
 
     return () => {};
@@ -56,12 +53,20 @@ const AppDrawer = () => {
 
         <Drawer.Screen
           name="Weather"
-          initialParams={{city: 'Jalna'}}
+          initialParams={{city: 'Pune'}}
           component={Weather}
         />
         <Drawer.Screen name="Favourite" component={Favourite} />
-        <Drawer.Screen name="RecentSearch" component={RecentSearch} />
-        <Drawer.Screen name="SearchLocation" component={SearchLocation} />
+        <Drawer.Screen
+          name="RecentSearch"
+          options={{title: 'Recent Search'}}
+          component={RecentSearch}
+        />
+        <Drawer.Screen
+          name="SearchLocation"
+          component={SearchLocation}
+          options={{title: 'Search Location'}}
+        />
       </Drawer.Navigator>
     </NavigationContainer>
   );

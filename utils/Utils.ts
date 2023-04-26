@@ -13,7 +13,6 @@ export class Utils {
   };
 
   static cities: {city: string}[] = [
-    {city: 'Jalna'},
     {city: 'Beed'},
     {city: 'Aurangabad'},
     {city: 'Pune'},

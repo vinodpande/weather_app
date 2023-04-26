@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import moment from 'moment';
 import {RealmWeatherData, useObject, useRealm} from '../realm/RealmWeatherData';
 import Container from '../shared/Container';
-import HeaderBar from '../shared/HeaderBar';
+import HeaderBar from '../shared/headers/HeaderBar';
 import TextLabel from '../shared/TextLabel';
 import Row from '../shared/Row';
 import Column from '../shared/Column';
@@ -13,6 +13,7 @@ import Favourite from './Favourite';
 import FavouriteComponent from '../shared/FavouriteComponent';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../drawer/AppDrawer';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 export interface IWeatherData {
   main: string;
@@ -39,7 +40,7 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
 
   const realm = useRealm();
   const realmObject = useObject(RealmWeatherData, route.params.city);
-  // console.log('realmObject', realmObject);
+  console.log('realmObject', realmObject);
 
   const [weatherData, setWeatherData] = useState<IWeatherData>();
 
@@ -62,7 +63,7 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
   useEffect(() => {
     getMoviesFromApi();
     return () => {};
-  }, []);
+  }, [route.params.city]);
 
   useEffect(() => {
     setTempMode(Utils.Celsius);
@@ -76,7 +77,7 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
     )
       .then(response => response.json())
       .then(json => {
-        // console.log('json', json);
+        console.log('json', json);
         setWeatherData({
           main: json.weather[0].main,
           description: json.weather[0].description,
@@ -100,26 +101,30 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
   const onRecentSave = (data?: IWeatherData) => {
     // console.log(data);
     if (data?.city) {
-      console.log('Updating records');
       if (realmObject?.city === data.city) {
+        console.log('Updating records');
         realm.write(() => {
           (realmObject.temp = data.temp),
             (realmObject.temp_min = data.temp_min),
             (realmObject.temp_min = data.temp_min),
             (realmObject.feels_like = data.feels_like),
-            (realmObject.is_favourite = false);
+            (realmObject.is_recent = true);
         });
+      } else {
+        console.log('Saved');
+        try {
+          realm.write(() => {
+            realm.create('RealmWeatherData', {
+              _id: new Realm.BSON.ObjectId(),
+              is_recent: true,
+              is_favourite: false,
+              ...data,
+            });
+          });
+        } catch (e) {
+          console.log('Exception', e);
+        }
       }
-    } else {
-      console.log('Saved');
-      realm.write(() => {
-        realm.create('RealmWeatherData', {
-          _id: new Realm.BSON.ObjectId(),
-          is_recent: true,
-          is_favourite: false,
-          ...data,
-        });
-      });
     }
   };
 
@@ -129,8 +134,12 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <Container>
-      <HeaderBar goto={gotToSearchLocation} />
-      <Row flex={2}>
+      <HeaderBar
+        goto={gotToSearchLocation}
+        showImage={true}
+        navigation={navigation}
+      />
+      <Row flex={1}>
         <Column>
           <TextLabel type="date">{weatherData?.date}</TextLabel>
           <TextLabel type="city">
@@ -144,9 +153,22 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
           </View>
         </Column>
       </Row>
-      <Row flex={2}>
-        <Column>
-          <Row flex={0}>
+
+      <Row
+        flex={2}
+        style={{
+          margin: 0,
+          padding: 0,
+          justifyContent: 'center',
+        }}>
+        <Column alignSelf="center">
+          <Image
+            style={{width: 64, height: 67}}
+            source={{
+              uri: `https://openweathermap.org/img/wn/03n.png`,
+            }}
+          />
+          <Row flex={0} style={{margin: 0, padding: 0}}>
             <TextLabel type="temp">{temp}</TextLabel>
             <GroupButton onCalculateTemp={setTempMode} />
           </Row>
@@ -155,34 +177,38 @@ const Weather: React.FC<Props> = ({route, navigation}) => {
         </Column>
       </Row>
 
-      <Row flex={1} elevation={2}>
+      <Row flex={1} elevation={2} style={{padding: 0}}>
         <Image
           source={require('../assets/images/icon_temperature_info.png')}
           style={styles.icon_min_max}
         />
 
         <Column align="flex-start" alignSelf="center">
-          <TextLabel type="favourite">Min - Max</TextLabel>
+          <TextLabel type="precipitation">Min - Max</TextLabel>
           <TextLabel type="city">
             {tempMin} - {tempMax}
           </TextLabel>
         </Column>
 
         <Image
-          source={require('../assets/images/icon_temperature_info.png')}
           style={styles.icon_min_max}
+          source={{
+            uri: `https://openweathermap.org/img/wn/${weatherData?.icon}.png`,
+          }}
         />
         <Column align="flex-start" alignSelf="center">
-          <TextLabel type="favourite">Precipitation</TextLabel>
+          <TextLabel type="precipitation">Precipitation</TextLabel>
           <TextLabel type="city">{weatherData?.feels_like}</TextLabel>
         </Column>
 
         <Image
-          source={require('../assets/images/icon_temperature_info.png')}
           style={styles.icon_min_max}
+          source={{
+            uri: `https://openweathermap.org/img/wn/03n.png`,
+          }}
         />
         <Column align="flex-start" alignSelf="center">
-          <TextLabel type="favourite">humidity</TextLabel>
+          <TextLabel type="precipitation">humidity</TextLabel>
           <TextLabel type="city">{weatherData?.humidity}</TextLabel>
         </Column>
       </Row>
@@ -207,8 +233,8 @@ const styles = StyleSheet.create({
   icon_min_max: {
     width: 18,
     height: 34,
-    marginLeft: 16,
-    marginRight: 8,
+    marginLeft: 0,
+    marginRight: 7,
   },
   addfavourite: {
     flexDirection: 'row',

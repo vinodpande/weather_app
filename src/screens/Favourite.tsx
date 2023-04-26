@@ -1,18 +1,21 @@
-import {View, Text, StyleSheet, Pressable, FlatList} from 'react-native';
-import React from 'react';
+import {View, Text, StyleSheet, Pressable, FlatList, Alert} from 'react-native';
+import React, {useState} from 'react';
 import Container from '../shared/Container';
-import HeaderBar from '../shared/HeaderBar';
+import HeaderBar from '../shared/headers/HeaderBar';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../drawer/AppDrawer';
 import {RealmWeatherData, useQuery, useRealm} from '../realm/RealmWeatherData';
 import Row from '../shared/Row';
 import TextLabel from '../shared/TextLabel';
 import RenderListItem from '../shared/RenderListItem';
-import SearchHeaderBar from '../shared/SearchHeaderBar';
+import SearchHeaderBar from '../shared/headers/SearchHeaderBar';
+import NotFound from '../shared/NotFound';
+import CustomModel from '../shared/CustomModel';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Favourite'>;
 
-const Favourite: React.FC<Props> = () => {
+const Favourite: React.FC<Props> = ({navigation}) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const realm = useRealm();
   const objects = useQuery(RealmWeatherData).filter(item => {
     if (item.is_favourite === true) {
@@ -40,24 +43,34 @@ const Favourite: React.FC<Props> = () => {
 
   return (
     <Container>
-      <SearchHeaderBar goto={() => {}} />
-      <Row flex={0}>
-        <TextLabel type="recentSearchLabel">
-          6 City Added as Favourite
-        </TextLabel>
-        <Pressable
-          onPress={() => clearAll()}
-          style={{flex: 1, alignItems: 'flex-end'}}>
-          <TextLabel type="favourite">Remove All</TextLabel>
-        </Pressable>
-      </Row>
-      {/* <RenderListItem data={data} />
-      <RenderListItem data={data} /> */}
-      <FlatList
-        data={objects}
-        renderItem={({item}) => <RenderListItem data={item} />}
-        keyExtractor={item => item._id.toHexString()}
+      <HeaderBar label="Favourite" goto={() => {}} navigation={navigation} />
+      <CustomModel
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        clear={clearAll}
       />
+      {objects.length <= 0 ? (
+        <NotFound label="No Favourites Added" />
+      ) : (
+        <>
+          <Row flex={0}>
+            <TextLabel type="recentSearchLabel">
+              {`${objects.length} City added as favourite`}
+            </TextLabel>
+            <Pressable
+              onPress={() => setModalVisible(true)}
+              style={{flex: 1, alignItems: 'flex-end'}}>
+              <TextLabel type="favourite">Remove All</TextLabel>
+            </Pressable>
+          </Row>
+
+          <FlatList
+            data={objects}
+            renderItem={({item}) => <RenderListItem data={item} />}
+            keyExtractor={item => item._id.toHexString()}
+          />
+        </>
+      )}
     </Container>
   );
 };

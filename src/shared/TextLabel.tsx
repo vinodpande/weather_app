@@ -12,7 +12,11 @@ type Props = {
     | 'recentTemp'
     | 'recentDes'
     | 'recentSearchLabel'
-    | 'searchLabel';
+    | 'searchLabel'
+    | 'precipitation'
+    | 'headLabel'
+    | 'modelLabel'
+    | 'modelButton';
 };
 
 const TextLabel: React.FC<Props> = props => {
@@ -40,6 +44,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginLeft: 7,
   },
+  precipitation: {
+    color: '#FFFFFF',
+    marginTop: 0,
+    fontSize: 13,
+    marginLeft: 0,
+  },
   temp: {
     color: '#FFFFFF',
     marginTop: 15,
@@ -48,6 +58,7 @@ const styles = StyleSheet.create({
   recentLabel: {
     color: '#FFE539',
     fontSize: 15,
+    marginLeft: 16,
   },
   recentTemp: {
     color: '#FFFFFF',
@@ -71,6 +82,31 @@ const styles = StyleSheet.create({
   searchLabel: {
     color: '#000000',
     fontSize: 14,
+  },
+  headLabel: {
+    flex: 1,
+    color: '#292F33',
+    fontSize: 20,
+    fontWeight: '500',
+    // fontFamily:'Roboto'
+    marginLeft: 32,
+    marginTop: 0,
+  },
+  modelLabel: {
+    color: 'rgba(0,0,0,0.54)',
+    fontSize: 16,
+    letterSpacing: 0,
+    lineHeight: 24,
+    fontFamily: 'Roboto',
+    paddingLeft: 24,
+    paddingRight: 24,
+  },
+  modelButton: {
+    width: 50,
+    height: 36,
+    color: '#673AB7',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });
 export default TextLabel;

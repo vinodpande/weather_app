@@ -83,9 +83,10 @@ const styles = StyleSheet.create({
     height: 30,
     width: 28,
     backgroundColor: 'transparent',
-    borderRadius: 2,
-    borderRadColor: '#FFF',
+    borderRadius: 0,
+    borderColor: '#FFF',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   buttonHighLight: {
     flexDirection: 'row',

@@ -2,6 +2,7 @@ import {Pressable, Image, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import React from 'react';
 import {IWeatherData} from '../screens/Weather';
 import {RealmWeatherData, useObject, useRealm} from '../realm/RealmWeatherData';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 type Props = {
   weatherData?: IWeatherData;
@@ -27,10 +28,8 @@ const FavouriteComponent: React.FC<Props> = ({weatherData}) => {
 
   return (
     <Pressable onPress={() => onUpdateForFav(weatherData)}>
-      <Image
-        source={require('../assets/images/icon_favourite.png')}
-        style={styles.icon}
-      />
+      <Icon name="favorite-border" size={22} color="#FFF" />
+      <Icon name="favorite" size={22} color="#FFE539" />
     </Pressable>
   );
 };

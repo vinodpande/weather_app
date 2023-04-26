@@ -15,11 +15,11 @@ type Props = {
 const SearchListItem: React.FC<Props> = ({city, onSlectedCity}) => {
   // console.log('Searchlist data', city);
   return (
-    <Row style={styles.row}>
-      <Pressable onPress={() => onSlectedCity(city)}>
+    <Pressable onPress={() => onSlectedCity(city)}>
+      <Row style={styles.row}>
         <TextLabel type="searchLabel">{city}</TextLabel>
-      </Pressable>
-    </Row>
+      </Row>
+    </Pressable>
   );
 };
 

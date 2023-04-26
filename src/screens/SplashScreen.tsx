@@ -7,10 +7,12 @@ type Props = {};
 const SplashScreen = (props: Props) => {
   return (
     <Container>
-      <Image
-        source={require('../assets/images/logo_splash.png')}
-        style={styles.image_log}
-      />
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <Image
+          source={require('../assets/images/logo_splash.png')}
+          style={styles.image_log}
+        />
+      </View>
     </Container>
   );
 };

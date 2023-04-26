@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, Pressable, FlatList} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   RealmWeatherData,
   useObject,
@@ -11,21 +11,25 @@ import Column from '../shared/Column';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import TextLabel from '../shared/TextLabel';
 import Container from '../shared/Container';
-import HeaderBar from '../shared/HeaderBar';
+import HeaderBar from '../shared/headers/HeaderBar';
 import RenderListItem from '../shared/RenderListItem';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../drawer/AppDrawer';
+import NotFound from '../shared/NotFound';
+import CustomModel from '../shared/CustomModel';
+import {IWeatherData} from './Weather';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RecentSearch'>;
 
-const RecentSearch: React.FC<Props> = () => {
+const RecentSearch: React.FC<Props> = ({navigation}) => {
+  const [modalVisible, setModalVisible] = useState(false);
   const objects = useQuery(RealmWeatherData)?.filter(item => {
     if (item.is_recent === true) {
       return item;
     }
   });
   const realm = useRealm();
-  console.log('data', objects);
+  console.log('data objects', objects);
 
   const clearAll = () => {
     objects?.filter(item => {
@@ -45,22 +49,38 @@ const RecentSearch: React.FC<Props> = () => {
 
   return (
     <Container>
-      <HeaderBar goto={() => {}} />
-      <Row flex={0}>
-        <TextLabel type="recentSearchLabel">You recently Search for</TextLabel>
-        <Pressable
-          onPress={() => clearAll()}
-          style={{flex: 1, alignItems: 'flex-end'}}>
-          <TextLabel type="favourite">Clear All</TextLabel>
-        </Pressable>
-      </Row>
-      {/* <RenderListItem data={data} />
-      <RenderListItem data={data} /> */}
-      <FlatList
-        data={objects}
-        renderItem={({item}) => <RenderListItem data={item} />}
-        keyExtractor={item => item._id.toHexString()}
+      <HeaderBar
+        goto={() => {}}
+        label="Recent Search"
+        navigation={navigation}
       />
+      <CustomModel
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        clear={clearAll}
+      />
+      {objects.length <= 0 ? (
+        <NotFound label="No Recent Search" />
+      ) : (
+        <>
+          <Row flex={0}>
+            <TextLabel type="recentSearchLabel">
+              You recently Search for
+            </TextLabel>
+            <Pressable
+              onPress={() => setModalVisible(true)}
+              style={{flex: 1, alignItems: 'flex-end'}}>
+              <TextLabel type="favourite">Clear All</TextLabel>
+            </Pressable>
+          </Row>
+
+          <FlatList
+            data={objects}
+            renderItem={({item}) => <RenderListItem data={item} />}
+            keyExtractor={item => item._id.toHexString()}
+          />
+        </>
+      )}
     </Container>
   );
 };

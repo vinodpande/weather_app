@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../drawer/AppDrawer';
 import Container from '../shared/Container';
-import SearchHeaderBar from '../shared/SearchHeaderBar';
+import SearchHeaderBar from '../shared/headers/SearchHeaderBar';
 import {FlatList} from 'react-native-gesture-handler';
 import SearchListItem from '../shared/SearchListItem';
 import {Utils} from '../../utils/Utils';
@@ -28,7 +28,7 @@ const SearchLocation: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: '#FFF'}}>
-      <SearchHeaderBar goto={filterItems} />
+      <SearchHeaderBar goto={filterItems} navigation={navigation} />
       <FlatList
         numColumns={1}
         data={filterCites}
